@@ -17,6 +17,8 @@ import java.io.IOException;
  */
 public class RequestThreadTimes extends ThreadLimitTimes {
 
+    private static final long serialVersionUID = -2751325651625435070L;
+
     static Logger logger = LoggerFactory.getLogger(RequestThreadTimes.class);
 
     /**
@@ -48,6 +50,11 @@ public class RequestThreadTimes extends ThreadLimitTimes {
     @Override
     protected void after() {
         GCThread.stop();
+    }
+
+    @Override
+    public boolean status() {
+        return false;
     }
 
     /**

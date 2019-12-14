@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
  */
 public class UpdateSqlThread extends ThreadLimitTimes {
 
+    private static final long serialVersionUID = -3092133307939595649L;
+
     private static Logger logger = LoggerFactory.getLogger(UpdateSqlThread.class);
 
     String sql;
@@ -31,4 +33,11 @@ public class UpdateSqlThread extends ThreadLimitTimes {
     protected void after() {
         base.mySqlOver();
     }
+
+    @Override
+    public boolean status() {
+        return false;
+    }
+
+
 }
