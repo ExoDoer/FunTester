@@ -17,8 +17,6 @@ import java.io.IOException;
  */
 public class RequestThreadTimes extends ThreadLimitTimes {
 
-    private static final long serialVersionUID = -2751325651625435070L;
-
     static Logger logger = LoggerFactory.getLogger(RequestThreadTimes.class);
 
     /**
