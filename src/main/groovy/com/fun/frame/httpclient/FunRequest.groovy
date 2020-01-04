@@ -12,6 +12,7 @@ import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpRequestBase
+import org.apache.http.client.methods.RequestBuilder
 import org.apache.http.util.EntityUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -283,9 +284,7 @@ public class FunRequest extends FanLibrary implements Serializable, Cloneable {
 
     @Override
     FunRequest clone() {
-        def fun = new FunRequest()
-        fun.setRequest(cloneRequest(getRequest()))
-        fun
+        initFromRequest(this.getRequest())
     }
 
     @Override
@@ -339,6 +338,9 @@ public class FunRequest extends FanLibrary implements Serializable, Cloneable {
         return request;
     }
 
+    static HttpRequestBase doCopy(HttpRequestBase base) {
+        (HttpRequestBase) RequestBuilder.copy(base).build()
+    }
 
 /**
  * 拷贝HttpRequestBase对象
@@ -346,7 +348,7 @@ public class FunRequest extends FanLibrary implements Serializable, Cloneable {
  * @return
  */
     static HttpRequestBase cloneRequest(HttpRequestBase base) {
-        return initFromRequest(base).getRequest()
+        initFromRequest(base).getRequest()
     }
 
 /**

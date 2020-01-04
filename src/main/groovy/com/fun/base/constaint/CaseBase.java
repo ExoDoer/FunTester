@@ -1,5 +1,6 @@
 package com.fun.base.constaint;
 
+import com.fun.db.mysql.MySqlTest;
 import com.fun.frame.SourceCode;
 import net.sf.json.JSONObject;
 
@@ -15,6 +16,7 @@ public abstract class CaseBase extends SourceCode {
      * @param result 测试用例结果
      */
     public void saveResult(String label, JSONObject result) {
+        MySqlTest.saveTestResult(label, result);
     }
 
     /**
