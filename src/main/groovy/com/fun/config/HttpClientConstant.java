@@ -34,12 +34,17 @@ public class HttpClientConstant {
     /**
      * 连接目标url最大超时 单位：毫秒
      */
-    public static int CONNECT_TIMEOUT = 5 * 1000;
+    public static int CONNECT_TIMEOUT = propertyUtils.getPropertyInt("CONNECT_TIMEOUT") * 1000;
 
     /**
      * 等待响应（读数据）最大超时 单位：毫秒
      */
-    public static int SOCKET_TIMEOUT = 15 * 1000;
+    public static int SOCKET_TIMEOUT = propertyUtils.getPropertyInt("SOCKET_TIMEOUT") * 1000;
+
+    /**
+     * 记录
+     */
+    public static int MAX_ACCEPT_TIME = propertyUtils.getPropertyInt("MAX_ACCEPT_TIME") * 1000;
 
     /**
      * 连接池最大连接数
@@ -92,12 +97,12 @@ public class HttpClientConstant {
     /**
      * 重试次数
      */
-    public static int TRY_TIMES = 3;
+    public static int TRY_TIMES = propertyUtils.getPropertyInt("TRY_TIMES");
 
     /**
      * 关闭超时的链接
      */
-    public static int IDLE_TIMEOUT = 100;
+    public static int IDLE_TIMEOUT = 5;
 
     /**
      * 在设置请求contenttype参数，表示请求以io流发送数据
