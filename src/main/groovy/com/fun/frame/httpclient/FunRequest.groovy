@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 /**
  * 重写FanLibrary，使用面对对象思想
  */
-public class FunRequest extends FanLibrary implements Serializable, Cloneable {
+class FunRequest extends FanLibrary implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -4153600036943378727L;
 
@@ -359,7 +359,7 @@ public class FunRequest extends FanLibrary implements Serializable, Cloneable {
     public static void save(HttpRequestBase base, JSONObject response) {
         FunRequest request = initFromRequest(base)
         request.setResponse(response);
-        Save.info("/request/" + Time.getDate().substring(8) + SPACE_1 + request.getUri().replace(OR, PART), request.toString());
+        Save.info("/request/" + Time.getDate().substring(8) + SPACE_1 + request.getUri().replace(OR, PART).replaceAll("https*:\\|\\|", EMPTY), request.toString());
     }
 
 }
