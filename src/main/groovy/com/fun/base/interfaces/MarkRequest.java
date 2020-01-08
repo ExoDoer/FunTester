@@ -15,5 +15,7 @@ public interface MarkRequest {
      */
     public String mark(HttpRequestBase request);
 
+    public MarkRequest clone();
+
 
 }
