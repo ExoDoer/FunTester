@@ -7,6 +7,7 @@ import com.fun.db.mysql.MySqlTest
  * 性能测试结果集
  */
 class PerformanceResultBean extends AbstractBean {
+
     /**
      * 测试用例描述
      */

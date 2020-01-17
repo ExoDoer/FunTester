@@ -1,18 +1,18 @@
 package com.fun.base.constaint;
 
+import com.fun.base.interfaces.MarkThread;
 import com.fun.frame.SourceCode;
 
-import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 /**
  * 多线程任务基类，可单独使用
  *
  * @param <T> 必需实现Serializable
  */
-public abstract class ThreadBase<T> extends SourceCode implements Runnable, Serializable {
-
-    private static final long serialVersionUID = -1060930011532994028L;
+public abstract class ThreadBase<T> extends SourceCode implements Runnable {
 
     public int errorNum;
 
@@ -24,7 +24,12 @@ public abstract class ThreadBase<T> extends SourceCode implements Runnable, Seri
      * 会在concurrent类里面根据线程数自动设定
      * </p>
      */
-   protected CountDownLatch countDownLatch;
+    protected CountDownLatch countDownLatch;
+
+    /**
+     * 标记对象
+     */
+    public MarkThread mark;
 
     /**
      * 用于设置访问资源
@@ -39,7 +44,7 @@ public abstract class ThreadBase<T> extends SourceCode implements Runnable, Seri
      *
      * @return
      */
-    public String getT() {
+    public String getTString() {
         return t.toString();
     }
 
@@ -88,6 +93,16 @@ public abstract class ThreadBase<T> extends SourceCode implements Runnable, Seri
      */
     public boolean status() {
         return false;
+    }
+
+    /**
+     * Groovy乘法调用方法
+     *
+     * @param num
+     * @return
+     */
+    public List<ThreadBase> multiply(int num) {
+        return range(num).mapToObj(x -> this.clone()).collect(Collectors.toList());
     }
 
 

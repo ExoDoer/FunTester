@@ -58,7 +58,7 @@ public class FanLibrary extends SourceCode {
     /**
      * 最近发送的请求
      */
-    public static LinkedList<HttpRequestBase> requests = new LinkedList<>();
+    public static HttpRequestBase lastRequest;
 
     /**
      * 是否显示请求所有header的开关
@@ -338,8 +338,7 @@ public class FanLibrary extends SourceCode {
         } finally {
             HEADER_KEY = false;
             if (!requestInfo.isBlack()) {
-                if (requests.size() > 9) requests.removeFirst();
-                requests.add(request);
+                lastRequest = request;
             }
         }
         return res;
@@ -467,17 +466,14 @@ public class FanLibrary extends SourceCode {
     }
 
     /**
-     * 简单发送请求,只记录HTTP错误
+     * 简单发送请求
      *
      * @param request
      */
-    public static void excuteSimlple(HttpRequestBase request) throws IOException {
-        CloseableHttpResponse response = ClientManage.httpsClient.execute(request);
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            String content = FanLibrary.getContent(response);
-            logger.warn("响应状态码：{},响应内容：{}", content, response.getStatusLine());
+    public static String excuteSimlple(HttpRequestBase request) throws IOException {
+        try (CloseableHttpResponse response = ClientManage.httpsClient.execute(request);) {
+            return getContent(response);
         }
-        response.close();
     }
 
     /**
@@ -486,7 +482,7 @@ public class FanLibrary extends SourceCode {
      * @return
      */
     public static HttpRequestBase getLastRequest() {
-        return requests.getLast();
+        return lastRequest;
     }
 
     /**
