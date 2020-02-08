@@ -33,6 +33,11 @@ public class Constant {
 
     public static final String CONNECTOR = "_";
 
+    /**
+     * 读写配置文件过滤的文本
+     */
+    public static final String FILTER = "##";
+
     public static final String DEFAULT_STRING = "FunTester";
 
     public static final int TEST_ERROR_CODE = -2;
@@ -42,6 +47,8 @@ public class Constant {
     private static Properties getSysInfo() {
         return System.getProperties();
     }
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * UTF-8字符编码格式
