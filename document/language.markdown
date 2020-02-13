@@ -16,6 +16,8 @@
 - [从JVM堆内存分析验证深浅拷贝](https://mp.weixin.qq.com/s/SdYDnoau1rjjvPC2SUymBg)
 - [如何学习Java基础](https://mp.weixin.qq.com/s/FCPStkYoJF67NYln4Lc6xg)
 - [如何保存HTTPrequestbase和CloseableHttpResponse](https://mp.weixin.qq.com/s/gRY8HRQHCh0PfyS7Q22IwA)
+- [如何在匿名thread子类中保证线程安全](https://mp.weixin.qq.com/s/GCXx_-ummi0JfZQ7GTIxig)
+- [Java中interface属性和实例方法](https://mp.weixin.qq.com/s/vrKkM6522tgw3v_cL7R8HA)
 
 ## Groovy
 - [java和groovy混合编程时提示找不到符合错误解决办法](https://mp.weixin.qq.com/s/dLC2W7nIi5zCuK6JTkiA-w)
@@ -35,4 +37,6 @@
 - [python用递归筛选法求N以内的孪生质数（孪生素数）](https://mp.weixin.qq.com/s/rVY2pTl8So11WCvA9GrFbA)
 - [利用python wxpy和requests写一个自动应答微信机器人实例](https://mp.weixin.qq.com/s/Fni2kX5BRjdqOQ-glCLjRg)
 
-![长按关注](https://mmbiz.qpic.cn/mmbiz_jpg/13eN86FKXzBEASPySoVdOFmP12QUIWAQms664L0b82nic8BRIlufg0QibzXNnoibZp8yqhU9Pv0hXjKtqrGof8kMA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+![](http://pic.automancloud.com/0_Fotor.jpg)
+
+![](http://pic.automancloud.com/42387498274.jpeg)

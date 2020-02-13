@@ -2,7 +2,7 @@ package com.fun.config
 
 import com.fun.frame.SourceCode
 import com.fun.utils.WriteRead
-import net.sf.json.JSONObject
+import com.alibaba.fastjson.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -143,7 +143,7 @@ class PropertyUtils extends SourceCode {
  */
         boolean contain(def key) {
             boolean var = properties.containsKey key asBoolean()
-            if (!var) logger.error("配置{}未发现！", key)
+            if (!var) PropertyUtils.logger.error("配置{}未发现！", key)
             var
         }
     }
