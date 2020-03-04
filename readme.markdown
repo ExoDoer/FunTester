@@ -1,6 +1,6 @@
 # 分支简介
 
-此分支删除了mysql MongoDB redis dubbo的测试方法,主要用于spring项目
+此分支删除了mysql MongoDB redis dubbo的测试方法,主要用于spring项目还有Jenkins项目
 
 作者QQ：1009329307
 联系地址：Fhaohaizi@163.com
