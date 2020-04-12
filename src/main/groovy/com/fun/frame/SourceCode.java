@@ -4,6 +4,7 @@ package com.fun.frame;
 import com.alibaba.fastjson.JSONObject;
 import com.fun.base.exception.FailException;
 import com.fun.base.exception.ParamException;
+import com.fun.base.interfaces.IMessage;
 import com.fun.utils.Regex;
 import com.fun.utils.Time;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,16 @@ public class SourceCode extends Output implements Cloneable {
     private static Logger logger = LoggerFactory.getLogger(SourceCode.class);
 
     private static Scanner scanner;
+
+    private static IMessage iMessage;
+
+    public static IMessage getiMessage() {
+        return iMessage;
+    }
+
+    public static void setiMessage(IMessage iMessage) {
+        SourceCode.iMessage = iMessage;
+    }
 
     /**
      * 获取日志记录的logger
@@ -74,7 +85,7 @@ public class SourceCode extends Output implements Cloneable {
         scanner = new Scanner(System.in);
         while (scanner.hasNext()) {
             String next = scanner.next();
-            if (next.equals(key.toString())) break;
+            if (next.equalsIgnoreCase(key.toString())) break;
             logger.warn("输入：{}错误！", next);
         }
         long end = Time.getTimeStamp();
@@ -275,6 +286,17 @@ public class SourceCode extends Output implements Cloneable {
      */
     public static int getRandomInt(int num) {
         return new Random().nextInt(num) + 1;
+    }
+
+    /**
+     * 随机范围int,取头不取尾
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public static int getRandomIntRange(int start, int end) {
+        return new Random().nextInt(end - start) + start;
     }
 
     /**
