@@ -24,6 +24,9 @@ public abstract class ThreadLimitTimesCount<T> extends ThreadBase {
 
     private static final Logger logger = LoggerFactory.getLogger(ThreadLimitTimesCount.class);
 
+    /**
+     * 记录所有超时的请求标记
+     */
     public List<String> marks = new ArrayList<>();
 
     /**
@@ -65,6 +68,7 @@ public abstract class ThreadLimitTimesCount<T> extends ThreadBase {
                     if (status() || key) break;
                 } catch (Exception e) {
                     logger.warn("执行任务失败！", e);
+                    logger.warn("执行失败对象的标记:{}", threadmark);
                     errorNum++;
                 }
             }
