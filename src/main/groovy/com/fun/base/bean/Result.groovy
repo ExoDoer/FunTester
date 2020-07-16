@@ -1,8 +1,13 @@
 package com.fun.base.bean
+
+import com.alibaba.fastjson.JSONObject
+import com.fun.base.interfaces.ReturnCode
+import com.fun.config.Constant
+
 /**
  * 通用的返回体
  * 配合moco框架使用
- * @param <T >
+ * @param < T >
  */
 class Result<T> extends AbstractBean {
 
@@ -23,21 +28,36 @@ class Result<T> extends AbstractBean {
  * 返回简单的响应
  * @param c
  */
-    Result(int c) {
-        this.code = c
+
+    Result(ReturnCode errorCode) {
+        this(errorCode.getCode(), errorCode.getDesc())
     }
 
-
+    def Result() {
+    }
 /**
  * 返回成功响应内容
  * @param data
  * @return
  */
     static <T> Result<T> success(T data) {
-        new Result<>(0, data)
+        new Result(0, data)
     }
 
-    def Result() {
+    static Result success() {
+        new Result()
+    }
+
+    static Result build(ReturnCode errorCode) {
+        new Result(errorCode)
+    }
+
+    static Result build(int code, String msg) {
+        new Result(code, msg)
+    }
+
+    static Result build(List listData) {
+        success([list: listData] as JSONObject)
     }
 
 /**
@@ -46,7 +66,15 @@ class Result<T> extends AbstractBean {
  * @return
  */
     static <T> Result<T> fail(T data) {
-        new Result<T>(TEST_ERROR_CODE, data)
+        new Result<T>(Constant.TEST_ERROR_CODE, data)
+    }
+
+    static Result fail() {
+        new Result(Constant.TEST_ERROR_CODE)
+    }
+
+    static Result fail(ReturnCode errorCode) {
+        new Result(errorCode)
     }
 
 /**

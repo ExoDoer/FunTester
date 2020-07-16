@@ -6,7 +6,6 @@ import com.github.dreamhead.moco.MocoConfig;
 import com.github.dreamhead.moco.ResponseHandler;
 import com.github.dreamhead.moco.handler.AbstractResponseHandler;
 import com.github.dreamhead.moco.internal.SessionContext;
-import com.github.dreamhead.moco.model.MessageContent;
 import com.google.common.base.Function;
 
 import java.util.Map;
@@ -16,25 +15,25 @@ import java.util.concurrent.ConcurrentHashMap;
  * 循环的responsehandle
  */
 @SuppressWarnings("all")
-public class LimitHandle extends AbstractResponseHandler {
+public class LimitHandler extends AbstractResponseHandler {
 
 
     private final ResponseHandler limit;
 
     private final ResponseHandler unlimit;
 
-    private Map<String, Long> tatal = new ConcurrentHashMap<>();
+    private Map<String, Long> total = new ConcurrentHashMap<>();
 
     private int interval;
 
-    private LimitHandle(final ResponseHandler limit, final ResponseHandler unLimit, int interval) {
+    private LimitHandler(final ResponseHandler limit, final ResponseHandler unLimit, int interval) {
         this.limit = limit;
         this.unlimit = unLimit;
         this.interval = interval;
     }
 
     public static ResponseHandler newSeq(final ResponseHandler limit, final ResponseHandler unLimit, int interval) {
-        return new LimitHandle(limit, unLimit, interval);
+        return new LimitHandler(limit, unLimit, interval);
     }
 
     /**
@@ -46,8 +45,7 @@ public class LimitHandle extends AbstractResponseHandler {
     public void writeToResponse(final SessionContext context) {
         HttpRequest request = (HttpRequest) context.getRequest();
         String uri = request.getUri();
-        MessageContent content = request.getContent();
-        (limited(uri + content) ? limit : unlimit).writeToResponse(context);
+        (limited(uri ) ? limit : unlimit).writeToResponse(context);
     }
 
     @Override
@@ -55,7 +53,7 @@ public class LimitHandle extends AbstractResponseHandler {
         if (config.isFor(MocoConfig.RESPONSE_ID)) {
             return super.apply(config);
         }
-        return new LimitHandle(limit, unlimit, interval);
+        return new LimitHandler(limit, unlimit, interval);
     }
 
     private Function<ResponseHandler, ResponseHandler> applyConfig(final MocoConfig config) {
@@ -78,8 +76,8 @@ public class LimitHandle extends AbstractResponseHandler {
      */
     public boolean limited(String info) {
         long fresh = Time.getTimeStamp();
-        long old = tatal.containsKey(info) ? tatal.get(info) : 0L;
-        tatal.put(info, fresh);
+        long old = total.containsKey(info) ? total.get(info) : 0L;
+        total.put(info, fresh);
         return fresh - old > interval;
     }
 }

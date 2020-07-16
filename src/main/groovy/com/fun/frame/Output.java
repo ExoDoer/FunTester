@@ -1,6 +1,7 @@
 package com.fun.frame;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.fun.base.bean.AbstractBean;
 import com.fun.config.Constant;
@@ -141,14 +142,6 @@ public class Output extends Constant {
         output(ArrayUtils.toObject(nums));
     }
 
-    public static void output(boolean[] nums) {
-        output(ArrayUtils.toObject(nums));
-    }
-
-    public static void output(char[] nums) {
-        output(ArrayUtils.toObject(nums));
-    }
-
     /**
      * 输出json
      *
@@ -216,6 +209,20 @@ public class Output extends Constant {
 
         public static void show(Map map) {
             new ConsoleTable(map);
+        }
+
+        /**
+         * 打印可能的json数据
+         *
+         * @param content
+         */
+        public static void showStr(String content) {
+            try {
+                if (content.contains("&")) output(SourceCode.getJson(content.split("&")));
+                else output(JSONObject.parseObject(content));
+            } catch (JSONException e) {
+                output(content);
+            }
         }
 
         public static void show(List<List<String>> rows) {

@@ -1,15 +1,19 @@
 package com.fun.base.bean
 
+import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.fun.frame.Save
 import com.fun.frame.SourceCode
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.BeanUtils
 
 /**
  * bean的基类
  */
-abstract class AbstractBean extends SourceCode {
+abstract class AbstractBean implements Serializable {
+
+    private static final long serialVersionUID = -1595942567071159847L;
 
     static final Logger logger = LoggerFactory.getLogger(AbstractBean.class)
 
@@ -19,7 +23,7 @@ abstract class AbstractBean extends SourceCode {
      * @return
      */
     JSONObject toJson() {
-        return BeanUtil.toJson(this);
+        JSONObject.parseObject(JSONObject.toJSONString(this))
     }
 
     /**
@@ -36,8 +40,24 @@ abstract class AbstractBean extends SourceCode {
         logger.info(this.getClass().toString() + "：" + this.toString());
     }
 
+    def initFrom(String str) {
+        JSONObject.parseObject(str, this.getClass())
+    }
+
+    def initFrom(Object str) {
+        initFrom(JSON.toJSON(str))
+    }
+
+    def copyFrom(AbstractBean source) {
+        BeanUtils.copyProperties(source, this)
+    }
+
+    def copyTo(AbstractBean target) {
+        BeanUtils.copyProperties(this, target)
+    }
+
     @Override
     String toString() {
-        return this.toJson().toString();
+        JSONObject.toJSONString(this)
     }
 }

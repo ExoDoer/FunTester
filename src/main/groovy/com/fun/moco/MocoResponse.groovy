@@ -1,8 +1,10 @@
 package com.fun.moco
 
 import com.fun.base.bean.Result
-import com.fun.moco.support.CycleHandle
-import com.fun.moco.support.LimitHandle
+import com.fun.moco.support.CycleHandler
+import com.fun.moco.support.DelayHandler
+import com.fun.moco.support.LimitHandler
+import com.fun.moco.support.QPSHandler
 import com.fun.moco.support.RandomHandler
 import com.github.dreamhead.moco.ResponseHandler
 import com.github.dreamhead.moco.procedure.LatencyProcedure
@@ -14,6 +16,7 @@ import java.util.concurrent.TimeUnit
 import static com.github.dreamhead.moco.Moco.*
 import static com.github.dreamhead.moco.internal.ApiUtils.textToResource
 import static com.github.dreamhead.moco.util.Iterables.asIterable
+
 /**
  * responsehandle获取
  * 这里的继承关系为了更方便调用mocorequest和mocoresponse的静态方法
@@ -58,17 +61,9 @@ class MocoResponse extends MocoRequest {
     static ResponseHandler fail(Object result) {
         with Result.fail(result).toString()
     }
-/**
- * 随机response
- * @param handlers
- * @return
- */
-    static ResponseHandler randownRes(ResponseHandler handler, ResponseHandler... handlers) {
-        random handler, handlers
-    }
 
 /**
- * 随机返回闻文本
+ * 随机返回文本
  * @param contents
  * @return
  */
@@ -76,12 +71,12 @@ class MocoResponse extends MocoRequest {
         cycle content, contents
     }
 /**
- * 随机返回闻文本
+ * 随机返回文本
  * @param contents
  * @return
  */
     static ResponseHandler cycleRes(JSONObject content, JSONObject... contents) {
-        cycle content.toString(), (String[]) contents.toList().stream().map { x -> x.toString() }.toArray()
+        cycle content.toString(), (String[]) contents.toList().stream().map {x -> x.toString()}.toArray()
     }
 
 
@@ -110,7 +105,7 @@ class MocoResponse extends MocoRequest {
  * @return
  */
     static ResponseHandler sequenceRes(JSONObject content, JSONObject... contents) {
-        seq content.toString(), (String[]) contents.toList().stream().map { x -> x.toString() }.toArray()
+        seq content.toString(), (String[]) contents.toList().stream().map {x -> x.toString()}.toArray()
     }
 
 /**
@@ -149,7 +144,7 @@ class MocoResponse extends MocoRequest {
  * @return
  */
     static ResponseHandler[] setHeader(JSONObject json) {
-        json.keySet().stream().map { x -> setHeader(x.toString(), json.getString(x)) }.toArray() as ResponseHandler[]
+        json.keySet().stream().map {x -> setHeader(x.toString(), json.getString(x))}.toArray() as ResponseHandler[]
     }
 
 /**
@@ -196,7 +191,7 @@ class MocoResponse extends MocoRequest {
  * @return
  */
     static ResponseHandler random(JSONObject json, JSONObject... jsons) {
-        RandomHandler.newSeq(FluentIterable.from(asIterable(json.toString(), jsons.toList().stream().map { x -> x.toString() }.toArray() as String[])).transform(textToResource()))
+        RandomHandler.newSeq(FluentIterable.from(asIterable(json.toString(), jsons.toList().stream().map {x -> x.toString()}.toArray() as String[])).transform(textToResource()))
     }
 
 /**
@@ -210,13 +205,51 @@ class MocoResponse extends MocoRequest {
     }
 
 /**
+ * 延迟响应
+ * @param handler
+ * @param time 时间,单位ms,存在理论BUG,不能低于50ms
+ * @return
+ */
+    static ResponseHandler delay(ResponseHandler handler, int time) {
+        DelayHandler.newSeq(handler, time)
+    }
+
+/**
+ * 延迟响应,默认1000ms
+ * @param handler
+ * @return
+ */
+    static ResponseHandler delay(ResponseHandler handler) {
+        DelayHandler.newSeq(handler, 1000)
+    }
+
+/**
+ * 创建固定QPS的ResponseHandler,默认QPS=1
+ * @param handler
+ * @return
+ */
+    static ResponseHandler qps(ResponseHandler handler) {
+        QPSHandler.newSeq(handler, 1000)
+    }
+
+/**
+ * 创建固定QPS的ResponseHandler
+ * @param handler
+ * @param gap
+ * @return
+ */
+    static ResponseHandler qps(ResponseHandler handler,int gap) {
+        QPSHandler.newSeq(handler, gap)
+    }
+
+/**
  * 循环返回
  * @param content
  * @param contents
  * @return
  */
     static ResponseHandler cycle(String content, String... contents) {
-        CycleHandle.newSeq(FluentIterable.from(asIterable(content, contents)).transform(textToResource()))
+        CycleHandler.newSeq(FluentIterable.from(asIterable(content, contents)).transform(textToResource()))
     }
 
 /**
@@ -226,7 +259,7 @@ class MocoResponse extends MocoRequest {
  * @return
  */
     static ResponseHandler cycle(JSONObject json, JSONObject... jsons) {
-        CycleHandle.newSeq(FluentIterable.from(asIterable(json.toString(), jsons.toList().stream().map { x -> x.toString() }.toArray() as String[])).transform(textToResource()))
+        CycleHandler.newSeq(FluentIterable.from(asIterable(json.toString(), jsons.toList().stream().map {x -> x.toString()}.toArray() as String[])).transform(textToResource()))
     }
 
 /**
@@ -236,43 +269,45 @@ class MocoResponse extends MocoRequest {
  * @return
  */
     static ResponseHandler cycle(ResponseHandler handler, ResponseHandler... handlers) {
-        CycleHandle.newSeq(asIterable(handler, handlers))
+        CycleHandler.newSeq(asIterable(handler, handlers))
     }
 
 /**
- * 限制请求频次，默认1000ms
- * @param limit
- * @param unlimit
+ * 限制访问频率,默认访问间隔1000ms
+ * @param unlimited 不受限返回
+ * @param limited 受限时候返回
  * @return
  */
-    static ResponseHandler limit(String limited, String unlimited) {
-        limit contentResponse(limited), contentResponse(unlimited)
+    static ResponseHandler limit(String unlimited, String limited) {
+        limit textRes(limited), textRes(limited)
     }
 
-    static ResponseHandler limit(JSONObject limited, JSONObject unlimited) {
-        limit jsonResponse(limited), jsonResponse(unlimited)
+    static ResponseHandler limit(JSONObject unlimited, JSONObject limited) {
+        limit jsonResponse(limited), jsonResponse(limited)
     }
 
-    static ResponseHandler limit(ResponseHandler limited, ResponseHandler unlimited) {
-        limit limited, unlimited, 1000
+    static ResponseHandler limit(ResponseHandler unlimited, ResponseHandler limited) {
+        limit unlimited, limited, 1000
     }
+
 
 /**
- * 限制请求频次
- * @param limit
- * @param unlimit
- * @param interval 单位ms
+ *
+ * 限制访问频率
+ * @param unlimited 不受限返回
+ * @param limited 受限时候返回
+ * @param interval 访问间隔
  * @return
  */
-    static ResponseHandler limit(String limited, String unlimited, int interval) {
-        limit contentResponse(limited), contentResponse(unlimited), interval
+    static ResponseHandler limit(String unlimited, String limited, int interval) {
+        limit textRes(unlimited), textRes(limited), interval
     }
 
-    static ResponseHandler limit(JSONObject limited, JSONObject unlimited, int interval) {
-        limit limited.toString(), unlimited.toString(), interval
+    static ResponseHandler limit(JSONObject unlimited, JSONObject limited, int interval) {
+        limit unlimited.toString(), limited.toString(), interval
     }
 
-    static ResponseHandler limit(ResponseHandler limit, ResponseHandler unlimit, int interval) {
-        LimitHandle.newSeq(limit, unlimit, interval)
+    static ResponseHandler limit(ResponseHandler unlimited, ResponseHandler limited, int interval) {
+        LimitHandler.newSeq(unlimited, limited, interval)
     }
 }

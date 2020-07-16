@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -233,7 +235,10 @@ public class FanLibrary extends SourceCode {
      * @param request
      */
     protected static void beforeRequest(HttpRequestBase request) {
-        HttpClientConstant.COMMON_HEADER.forEach(header -> request.addHeader(header));
+        HttpClientConstant.COMMON_HEADER.forEach(header -> {
+            if (!request.containsHeader(header.getName()))
+                request.addHeader(header);
+        });
     }
 
     /**
@@ -265,10 +270,12 @@ public class FanLibrary extends SourceCode {
             if (StringUtils.isEmpty(content)) ParamException.fail("响应为空!");
             jsonObject = JSONObject.parseObject(content);
         } catch (JSONException e) {
-            jsonObject = getJson("content=" + content, "code=" + TEST_ERROR_CODE);
-            logger.warn("响应体非json格式，已经自动转换成json格式！");
+            jsonObject = new JSONObject() {{
+                put(RESPOINSE_CONTENT, content);
+                put(RESPONSE_CODE, TEST_ERROR_CODE);
+            }};            logger.warn("响应体非json格式，已经自动转换成json格式！");
         } finally {
-            if (!cookies.isEmpty()) jsonObject.put(HttpClientConstant.COOKIE, cookies);
+            if (cookies != null && !cookies.isEmpty()) jsonObject.put(HttpClientConstant.COOKIE, cookies);
             return jsonObject;
         }
     }
@@ -280,7 +287,7 @@ public class FanLibrary extends SourceCode {
      * @param response
      * @return
      */
-    public static String getContent(CloseableHttpResponse response) {
+    public static String getContent(HttpResponse response) {
         HttpEntity entity = response.getEntity();// 获取响应实体
         String content = EMPTY;
         try {
@@ -489,6 +496,27 @@ public class FanLibrary extends SourceCode {
     public static void excuteSync(HttpRequestBase request) {
         if (!ClientManage.httpAsyncClient.isRunning()) ClientManage.httpAsyncClient.start();
         ClientManage.httpAsyncClient.execute(request, null);
+    }
+
+    /**
+     * 异步发送请求获取影响Demo
+     * <p>经过测试没卵用</p>
+     *
+     * @param request
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static JSONObject excuteSyncWithResponse(HttpRequestBase request) {
+        if (!ClientManage.httpAsyncClient.isRunning()) ClientManage.httpAsyncClient.start();
+        Future<HttpResponse> execute = ClientManage.httpAsyncClient.execute(request, null);
+        try {
+            HttpResponse httpResponse = execute.get();
+            String content = getContent(httpResponse);
+            return getJsonResponse(content, null);
+        } catch (Exception e) {
+            logger.error("异步请求获取响应失败!", e);
+        }
+        return new JSONObject();
     }
 
     /**

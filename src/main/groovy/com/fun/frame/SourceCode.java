@@ -51,10 +51,6 @@ public class SourceCode extends Output implements Cloneable {
         return LoggerFactory.getLogger(name);
     }
 
-    public static Logger getLogger() {
-        return logger;
-    }
-
     /**
      * 获取当前时间戳10位int 类型的数据
      *
@@ -145,6 +141,14 @@ public class SourceCode extends Output implements Cloneable {
     public static JSONObject getJson(String... content) {
         if (StringUtils.isAnyEmpty(content)) ParamException.fail("转换成json格式参数错误!");
         return changeArraysToJson(content, "=");
+    }
+
+    public static JSONObject getSimpleJson(String key, Object value) {
+        if (StringUtils.isBlank(key)) return null;
+        JSONObject result = new JSONObject(1) {{
+            put(key, value);
+        }};
+        return result;
     }
 
     /**
@@ -296,6 +300,7 @@ public class SourceCode extends Output implements Cloneable {
      * @return
      */
     public static int getRandomIntRange(int start, int end) {
+        if (end <= start) return TEST_ERROR_CODE;
         return new Random().nextInt(end - start) + start;
     }
 

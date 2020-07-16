@@ -25,6 +25,8 @@ public class Constant {
 
     public static final String EMPTY = "";
 
+    public static final String COMMA = ",";
+
     public static final String OR = "/";
 
     public static final String PART = "|";
@@ -46,6 +48,10 @@ public class Constant {
     public static final String FILTER = "##";
 
     public static final String DEFAULT_STRING = "FunTester";
+
+    public static final String RESPONSE_CODE = "code";
+
+    public static final String RESPOINSE_CONTENT = "content";
 
     public static final int TEST_ERROR_CODE = -2;
 
