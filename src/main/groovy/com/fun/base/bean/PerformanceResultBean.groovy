@@ -1,7 +1,7 @@
 package com.fun.base.bean
 
 import com.fun.db.mysql.MySqlTest
-
+import static com.fun.frame.Output.output;
 
 /**
  * 性能测试结果集
